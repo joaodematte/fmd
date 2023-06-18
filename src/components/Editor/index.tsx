@@ -77,7 +77,6 @@ export default function Editor() {
         editor?.chain().focus().run();
       }}
     >
-      <button onClick={() => toast('My first toast')}>Give me a toast</button>
       <EditorContent editor={editor} />
     </div>
   );

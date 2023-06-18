@@ -24,6 +24,8 @@ export default function Editor() {
         toast.error('You have reached your request limit for the day.');
         return;
       }
+
+      toast.success('Text generated with success!');
     },
     onError: () => {
       toast.error('Something went wrong.');
@@ -46,6 +48,8 @@ export default function Editor() {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Tab' && editor?.isFocused && editor.getText().length >= 1) {
         e.preventDefault();
+
+        toast.message('Generating text...');
 
         complete(editor.getText());
       }
@@ -73,6 +77,7 @@ export default function Editor() {
         editor?.chain().focus().run();
       }}
     >
+      <button onClick={() => toast('My first toast')}>Give me a toast</button>
       <EditorContent editor={editor} />
     </div>
   );

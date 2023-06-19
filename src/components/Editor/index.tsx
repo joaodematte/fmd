@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import HeaderButtons from '../HeaderButtons';
 import TurndownService from 'turndown';
+import short from 'short-uuid';
 
 export default function Editor() {
   const [isMobile, setIsMobile] = useState(false);
@@ -59,7 +60,7 @@ export default function Editor() {
     const file = new Blob([turndownService.turndown(editor.getHTML())], { type: 'text/markdown' });
 
     element.href = URL.createObjectURL(file);
-    element.download = 'myFile.md';
+    element.download = `${short.generate()}.md`;
 
     document.body.appendChild(element);
     element.click();

@@ -37,6 +37,12 @@ export default function Editor() {
     },
     onError: () => {
       toast.error('Something went wrong.');
+    },
+    onFinish: (_prompt, completion) => {
+      editor?.commands.setTextSelection({
+        from: editor.state.selection.from - completion.length,
+        to: editor.state.selection.from
+      });
     }
   });
 
@@ -103,7 +109,11 @@ export default function Editor() {
 
     prev.current = completion;
 
-    editor?.commands.insertContent(diff);
+    editor?.commands.insertContent(diff, {
+      parseOptions: {
+        preserveWhitespace: 'full'
+      }
+    });
   }, [isLoading, editor, completion]);
 
   useEffect(() => {

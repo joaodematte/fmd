@@ -50,7 +50,7 @@ export async function POST(req: Request): Promise<Response> {
         content: prompt
       }
     ],
-    max_tokens: 50,
+    // max_tokens: 200,
     temperature: 0.7,
     top_p: 1,
     frequency_penalty: 0,

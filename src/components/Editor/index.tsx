@@ -5,14 +5,12 @@ import { TiptapEditorProps } from './props';
 import { TiptapEditorExtensions } from './extensions';
 import { useCompletion } from 'ai/react';
 import { toast } from 'sonner';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import HeaderButtons from '../HeaderButtons';
 import TurndownService from 'turndown';
 
 export default function Editor() {
-  const isMobile = Boolean(
-    navigator?.userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i)
-  );
+  const [isMobile, setIsMobile] = useState(false);
 
   const prev = useRef<string>('');
 
@@ -106,6 +104,12 @@ export default function Editor() {
 
     editor?.commands.insertContent(diff);
   }, [isLoading, editor, completion]);
+
+  useEffect(() => {
+    setIsMobile(
+      Boolean(navigator.userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i))
+    );
+  }, []);
 
   return (
     <>

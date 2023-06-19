@@ -46,9 +46,9 @@ export const TiptapEditorExtensions = [
   }),
   Placeholder.configure({
     placeholder: ({ editor }) => {
-      if (editor.isFocused) return "Start typing and press 'tab' for AI autocomplete...";
+      if (!editor.isFocused) return '';
 
-      return '';
+      return "Start typing and press 'tab' for AI autocomplete...";
     },
     includeChildren: true
   })

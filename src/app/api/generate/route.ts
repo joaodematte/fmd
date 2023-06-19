@@ -34,9 +34,7 @@ export async function POST(req: Request): Promise<Response> {
     }
   }
 
-  let { prompt: content } = await req.json();
-
-  const parsedContent = content.replace(/\n/g, ' ').replace(/\/$/, '').slice(0, 5000);
+  let { prompt } = await req.json();
 
   const response = await openai.createChatCompletion({
     model: 'gpt-3.5-turbo-16k',
@@ -49,7 +47,7 @@ export async function POST(req: Request): Promise<Response> {
       },
       {
         role: 'user',
-        content: parsedContent
+        content: prompt
       }
     ],
     max_tokens: 50,

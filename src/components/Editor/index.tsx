@@ -9,9 +9,31 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import HeaderButtons from '../HeaderButtons';
 import TurndownService from 'turndown';
 import short from 'short-uuid';
+import useLocalStorage from '@/lib/useLocalStorage';
+import { useDebouncedCallback } from 'use-debounce';
 
 export default function Editor() {
   const [isMobile, setIsMobile] = useState(false);
+
+  const [content, setContent] = useLocalStorage(
+    'fmdsh.content',
+    '<h1><b>fmd.sh</b></h1><h3><i>create, visualize and export markdown files with ease.</i></h3>'
+  );
+
+  const [saveStatus, setSaveStatus] = useState('Saved');
+
+  const [hydrated, setHydrated] = useState(false);
+
+  const debouncedUpdates = useDebouncedCallback(async ({ editor }) => {
+    const json = editor.getJSON();
+
+    setSaveStatus('Saving...');
+    setContent(json);
+
+    setTimeout(() => {
+      setSaveStatus('Saved');
+    }, 500);
+  }, 750);
 
   const prev = useRef<string>('');
 
@@ -20,8 +42,13 @@ export default function Editor() {
   const editor = useEditor({
     extensions: TiptapEditorExtensions,
     editorProps: TiptapEditorProps,
-    content: '<h1><b>fmd.sh</b></h1><h3><i>create, visualize and export markdown files with ease.</i></h3>',
-    autofocus: 'end'
+    content,
+    autofocus: 'end',
+    onUpdate: (e) => {
+      setSaveStatus('Unsaved');
+
+      debouncedUpdates(e);
+    }
   });
 
   const { complete, completion, isLoading, stop } = useCompletion({
@@ -78,7 +105,11 @@ export default function Editor() {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' || (e.metaKey && e.key === 'z')) stop();
+      if (e.key === 'Escape' || (e.metaKey && e.key === 'z')) {
+        stop();
+
+        toast.success('Generation stopped with success!');
+      }
     };
 
     if (isLoading) document.addEventListener('keydown', onKeyDown);
@@ -90,14 +121,15 @@ export default function Editor() {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Tab' && editor?.isFocused && editor.getText().length >= 1 && !isLoading) {
+      if (e.key === 'Tab' && editor?.isFocused && editor.getText().length >= 1) {
         e.preventDefault();
 
         generateText();
       }
     };
 
-    document.addEventListener('keydown', onKeyDown);
+    if (isLoading) document.addEventListener('keydown', onKeyDown);
+    else document.removeEventListener('keydown', onKeyDown);
 
     return () => {
       document.removeEventListener('keydown', onKeyDown);
@@ -122,6 +154,14 @@ export default function Editor() {
     );
   }, []);
 
+  useEffect(() => {
+    if (editor && content && !hydrated) {
+      editor.commands.setContent(content);
+
+      setHydrated(true);
+    }
+  }, [editor, content, hydrated]);
+
   return (
     <>
       <HeaderButtons
@@ -129,10 +169,11 @@ export default function Editor() {
         isMobile={isMobile}
         complete={handleGenerateButtonClick}
         exportMD={exportMD}
+        isExportDisabled={Boolean(editor?.isEmpty)}
       />
 
       <div
-        className="h-full w-full bg-white px-8 py-16 md:px-12"
+        className="relative w-full bg-white py-16 sm:py-12 px-12 min-h-[512px] sm:rounded-lg border-zinc-200/75 sm:border-[1px] sm:shadow-lg cursor-text"
         onClick={() => {
           editor?.chain().focus().run();
         }}

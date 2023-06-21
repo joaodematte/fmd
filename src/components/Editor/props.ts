@@ -6,11 +6,11 @@ export const TiptapEditorProps: EditorProps = {
     class:
       'prose-lg prose-headings:font-display focus:outline-none prose-img:rounded-md prose-img:border prose-img:border-stone-200'
   },
-  // handleDOMEvents: {
-  //   keydown: (_view, event) => {
-  //     return event.key === 'Enter';
-  //   }
-  // },
+  handleDOMEvents: {
+    keydown: (_view, event) => {
+      return event.key === 'Enter' && !event.shiftKey;
+    }
+  },
   handlePaste: (view, event) => {
     if (event.clipboardData && event.clipboardData.files && event.clipboardData.files[0]) {
       event.preventDefault();

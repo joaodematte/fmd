@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply h-screen w-full bg-zinc-100;
-}
-
 ::selection {
   @apply bg-zinc-900 text-zinc-100;
 }

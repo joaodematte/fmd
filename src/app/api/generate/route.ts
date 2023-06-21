@@ -20,7 +20,7 @@ export async function POST(req: Request): Promise<Response> {
       limiter: Ratelimit.slidingWindow(50, '1 d')
     });
 
-    const { success, limit, reset, remaining } = await ratelimit.limit(`novel_ratelimit_${ip}`);
+    const { success, limit, reset, remaining } = await ratelimit.limit(`fmd_ratelimit_${ip}`);
 
     if (!success) {
       return new Response('You have reached your request limit for the day.', {
@@ -36,21 +36,23 @@ export async function POST(req: Request): Promise<Response> {
 
   let { prompt } = await req.json();
 
+  const parsedPrompt = String(prompt).replace(/\n/g, ' ').replace(/\/$/, '').slice(0, 5000);
+
   const response = await openai.createChatCompletion({
-    model: 'gpt-3.5-turbo-16k',
+    model: 'gpt-3.5-turbo',
     messages: [
       {
         role: 'system',
         content:
           'You are an AI writing assistant that continues existing text based on context from prior text. ' +
-          'Give more weight/priority to the later characters than the beginning ones.'
+          'Give more weight/priority to the later characters than the beginning ones. Make sure to construct complete sentences.'
       },
       {
         role: 'user',
-        content: prompt
+        content: parsedPrompt
       }
     ],
-    // max_tokens: 200,
+    max_tokens: 100,
     temperature: 0.7,
     top_p: 1,
     frequency_penalty: 0,

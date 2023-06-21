@@ -8,18 +8,19 @@ interface Props {
   exportMD: () => void;
   isMobile: boolean;
   isLoading: boolean;
+  isExportDisabled: boolean;
 }
 
-export default function HeaderButtons({ isMobile, complete, isLoading, exportMD }: Props) {
+export default function HeaderButtons({ isMobile, complete, isLoading, exportMD, isExportDisabled }: Props) {
   return (
-    <div className="fixed right-4 top-4 flex gap-2">
+    <div className="fixed right-4 top-4 flex gap-2 z-50">
       {isMobile && (
         <Button variant="primary" disabled={isLoading} className="px-2.5 py-0.5" onClick={() => complete()}>
           <span className="text-sm font-medium">Generate text</span>
         </Button>
       )}
 
-      <Button variant="subtle" tooltip="Export document (.md)" onClick={() => exportMD()}>
+      <Button variant="subtle" tooltip="Export document (.md)" onClick={() => exportMD()} disabled={isExportDisabled}>
         <Download size={18} />
       </Button>
 

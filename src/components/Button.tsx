@@ -17,7 +17,7 @@ export default function Button({ children, tooltip, disabled, className, variant
       className
     ),
     subtle: clsx(
-      'rounded-md p-2 text-stone-900 bg-stone-100',
+      'rounded-md p-2 text-stone-900 bg-transparent border-zinc-200/50 border-[1px]',
       disabled ? 'cursor-not-allowed opacity-50' : 'focus:outline-black hover:bg-stone-50 focus:bg-stone-50',
       className
     )

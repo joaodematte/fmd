@@ -168,6 +168,7 @@ const CommandList = ({
         return;
       }
 
+      editor.chain().focus().deleteRange(range).run();
       toast.success('Text generated with success!');
     },
     onError: () => {

@@ -3,5 +3,5 @@
 import { Toaster } from 'sonner';
 
 export default function ToasterContainer() {
-  return <Toaster richColors expand={false} position="bottom-right" />;
+  return <Toaster richColors expand={false} position="top-center" />;
 }

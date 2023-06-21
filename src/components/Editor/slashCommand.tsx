@@ -12,6 +12,7 @@ import {
   Italic,
   List,
   ListOrdered,
+  Loader2,
   MessageSquarePlus,
   Sparkles,
   Text
@@ -164,19 +165,19 @@ const CommandList = ({
     onResponse: (response) => {
       if (response.status === 429) {
         toast.error('You have reached your request limit for the day.');
-
         return;
       }
-      editor.chain().focus().deleteRange(range).run();
-    },
-    onFinish: (_prompt, completion) => {
-      editor.commands.setTextSelection({
-        from: range.from,
-        to: range.from + completion.length
-      });
+
+      toast.success('Text generated with success!');
     },
     onError: () => {
       toast.error('Something went wrong.');
+    },
+    onFinish: (_prompt, completion) => {
+      editor?.commands.setTextSelection({
+        from: editor.state.selection.from - completion.length,
+        to: editor.state.selection.from
+      });
     }
   });
 
@@ -189,6 +190,7 @@ const CommandList = ({
           const text = editor.getText();
 
           complete(text);
+          toast.message('Generating text...');
         } else {
           command(item);
         }
@@ -262,7 +264,11 @@ const CommandList = ({
             onClick={() => selectItem(index)}
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-md border border-stone-200 bg-white">
-              {item.title === 'Continue writing' && isLoading ? null : item.icon}
+              {item.title === 'Continue writing' && isLoading ? (
+                <Loader2 size={18} className="animate-spin" />
+              ) : (
+                item.icon
+              )}
             </div>
             <div>
               <p className="font-medium">{item.title}</p>

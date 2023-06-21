@@ -113,6 +113,7 @@ export default function Editor() {
     };
 
     if (isLoading) document.addEventListener('keydown', onKeyDown);
+    else document.removeEventListener('keydown', onKeyDown);
 
     return () => {
       document.removeEventListener('keydown', onKeyDown);
@@ -128,8 +129,7 @@ export default function Editor() {
       }
     };
 
-    if (isLoading) document.addEventListener('keydown', onKeyDown);
-    else document.removeEventListener('keydown', onKeyDown);
+    document.addEventListener('keydown', onKeyDown);
 
     return () => {
       document.removeEventListener('keydown', onKeyDown);
